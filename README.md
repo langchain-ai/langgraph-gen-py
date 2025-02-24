@@ -8,9 +8,32 @@ specification file.
 ```shell
 pip install langgraph-gen
 ```
+## Stubs for Python
 
 ```shell
-langgraph-gen --input <path-to-spec-file> --output <path-to-output-file>
+langgraph-gen --input <path-to-spec-file> --output <path-to-output-file> --language python
+```
+
+## Stubs for TypeScript
+
+```shell
+langgraph-gen --input <path-to-spec-file> --output <path-to-output-file> --language typescript
+```
+
+## Example Spec
+
+```YAML
+# A simple 2-step Retrieval-Augmented Generation workflow
+name: RagWorkflow
+entrypoint: retrieve
+nodes:
+- name: retrieve
+- name: generate
+  edges:
+- from: retrieve
+  to: generate
+- from: generate
+  to: __end__
 ```
 
 ## Examples

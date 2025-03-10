@@ -1,0 +1,11 @@
+nodes:
+  - name: Node 1
+  - name: Node 2
+edges:
+  - from: __start__
+    condition: conditional_edge
+    paths: [Node 1, Node 2, __end__]
+  - from: Node 1
+    to: Node 2
+  - from: Node 2
+    to: __end__

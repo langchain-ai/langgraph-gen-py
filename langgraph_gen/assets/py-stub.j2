@@ -52,10 +52,13 @@ compiled_agent = agent.compile()
 
 print(compiled_agent.invoke({"foo": "bar"}))
 """
+{% macro standard_edge(edge) %}
+    {% if edge == "__end__" %}END{% elif edge == "__start__" %}START{% else %}"{{ edge }}"{% endif %}
+{% endmacro %}
 
 from typing import Callable, Any, Optional, Type
 
-from langgraph.constants import END
+from langgraph.constants import START, END
 from langgraph.graph import StateGraph
 
 
@@ -106,31 +109,28 @@ def {{ stub_name }}(
     {% for edge in edges %}
     {% if edge.condition is defined %}
     builder.add_conditional_edges(
-        "{{ edge.from }}",
+        {{ standard_edge(edge.from) }},
         nodes_by_name["{{ edge.condition }}"],
         {% if edge.paths is mapping %}
         {
         {% for key, value in edge.paths.items() %}
-            "{{ key }}": {% if value == "__end__" %}END{% else %}"{{ value }}"{% endif %},
+            "{{ key }}": {{ standard_edge(value) }},
         {% endfor %}
         }
         {% else %}
         [
         {%  for path in edge.paths %}
-            {% if value == "__end__" %}
-            END,
-            {% else %}
-            "{{ path }}",
-            {% endif %}
+            {{ standard_edge(path) }},
         {% endfor %}
         ],
         {% endif %}
     )
     {% else %}
-    builder.add_edge("{{ edge.from }}", {% if edge.to == "__end__" %}END{% else %}"{{ edge.to }}"{% endif %})
+    builder.add_edge({{ standard_edge(edge.from) }}, {{ standard_edge(edge.to) }})
     {% endif %}
     {% endfor %}
-
+    {% if entrypoint %}
     builder.set_entry_point("{{ entrypoint }}")
+    {% endif %}
     return builder
 

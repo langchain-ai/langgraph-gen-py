@@ -13,54 +13,46 @@ Below is a sample implementation of the generated stub:
 ```python
 from typing_extensions import TypedDict
 
-from [some_path] import AgenticRag
+from [some_path] import create_agent
 
 class SomeState(TypedDict):
     # define your attributes here
     foo: str
 
 # Define stand-alone functions
-def agent(state: SomeState) -> dict:
-    print("In node: agent")
+def Node_1(state: SomeState) -> dict:
+    print("In node: Node 1")
     return {
         # Add your state update logic here
     }
 
 
-def retrieve(state: SomeState) -> dict:
-    print("In node: retrieve")
+def Node_2(state: SomeState) -> dict:
+    print("In node: Node 2")
     return {
         # Add your state update logic here
     }
 
 
-def rewrite(state: SomeState) -> dict:
-    print("In node: rewrite")
+def Node_3(state: SomeState) -> dict:
+    print("In node: Node 3")
     return {
         # Add your state update logic here
     }
 
 
-def generate(state: SomeState) -> dict:
-    print("In node: generate")
-    return {
-        # Add your state update logic here
-    }
-
-
-def is_relevant(state: SomeState) -> str:
-    print("In condition: is_relevant")
+def conditional_edge(state: SomeState) -> str:
+    print("In condition: conditional_edge")
     raise NotImplementedError("Implement me.")
 
 
-agent = AgenticRag(
+agent = create_agent(
     state_schema=SomeState,
     impl=[
-        ("agent", agent),
-        ("retrieve", retrieve),
-        ("rewrite", rewrite),
-        ("generate", generate),
-        ("is_relevant", is_relevant),
+        ("Node 1", Node_1),
+        ("Node 2", Node_2),
+        ("Node 3", Node_3),
+        ("conditional_edge", conditional_edge),
     ]
 )
 
@@ -75,7 +67,7 @@ from langgraph.constants import START, END
 from langgraph.graph import StateGraph
 
 
-def AgenticRag(
+def create_agent(
     *,
     state_schema: Optional[Type[Any]] = None,
     config_schema: Optional[Type[Any]] = None,
@@ -83,7 +75,7 @@ def AgenticRag(
     output: Optional[Type[Any]] = None,
     impl: list[tuple[str, Callable]],
 ) -> StateGraph:
-    """Create the state graph for AgenticRag."""
+    """Create the state graph for create_agent."""
     # Declare the state graph
     builder = StateGraph(
         state_schema, config_schema=config_schema, input=input, output=output
@@ -94,11 +86,10 @@ def AgenticRag(
     all_names = set(nodes_by_name)
 
     expected_implementations = {
-        "agent",
-        "retrieve",
-        "rewrite",
-        "generate",
-        "is_relevant",
+        "Node_1",
+        "Node_2",
+        "Node_3",
+        "conditional_edge",
     }
 
     missing_nodes = expected_implementations - all_names
@@ -113,22 +104,20 @@ def AgenticRag(
         )
 
     # Add nodes
-    builder.add_node("agent", nodes_by_name["agent"])
-    builder.add_node("retrieve", nodes_by_name["retrieve"])
-    builder.add_node("rewrite", nodes_by_name["rewrite"])
-    builder.add_node("generate", nodes_by_name["generate"])
+    builder.add_node("Node 1", nodes_by_name["Node_1"])
+    builder.add_node("Node 2", nodes_by_name["Node_2"])
+    builder.add_node("Node 3", nodes_by_name["Node_3"])
 
     # Add edges
-    builder.add_edge("agent", "retrieve")
+    builder.add_edge(START, "Node 1")
+    builder.add_edge("Node 3", END)
+    builder.add_edge("Node 2", END)
     builder.add_conditional_edges(
-        "retrieve",
-        nodes_by_name["is_relevant"],
+        "Node 1",
+        nodes_by_name["conditional_edge"],
         [
-            "rewrite",
-            "generate",
+            "Node 2",
+            "Node 3",
         ],
     )
-    builder.add_edge("rewrite", "agent")
-    builder.add_edge("generate", END)
-    builder.set_entry_point("agent")
     return builder

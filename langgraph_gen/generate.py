@@ -41,14 +41,14 @@ def _validate_spec(spec: Any) -> None:
     """Raise an error if the spec is invalid."""
     if not isinstance(spec, dict):
         raise InvalidSpec("Specification must be a top level dictionary.")
-    required_fields = {"entrypoint", "nodes", "edges"}
+    required_fields = {"nodes", "edges"}
     if not required_fields.issubset(spec.keys()):
         missing = required_fields - spec.keys()
         raise ValueError(f"Missing required fields in spec: {', '.join(missing)}")
 
     node_names = {n["name"] for n in spec["nodes"]}
     for edge in spec["edges"]:
-        if edge["from"] not in node_names:
+        if edge["from"] not in node_names and edge["from"] != START:
             raise ValueError(f"Edge source node '{edge['from']}' not defined in nodes")
         if "to" in edge:
             if edge["to"] not in node_names and edge["to"] != END:
@@ -146,7 +146,7 @@ def generate_from_spec(
                 stub_name=stub_name,
                 nodes=spec["nodes"],
                 edges=spec["edges"],
-                entrypoint=spec["entrypoint"],
+                entrypoint=spec.get("entrypoint", None),
                 version=__version__,
                 stub_module=stub_module,
             )
@@ -228,7 +228,8 @@ def _add_to_graph(
             state_graph.add_edge(edge["from"], edge["to"])
 
     # Set the entry point
-    state_graph.add_edge(START, spec_["entrypoint"])
+    if "entrypoint" in spec_:
+        state_graph.add_edge(START, spec_["entrypoint"])
 
 
 def _add_to_graph_from_yaml(

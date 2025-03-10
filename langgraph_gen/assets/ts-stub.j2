@@ -9,6 +9,9 @@ Usage:
 2. Create a new agent using the stub.
 
 ```typescript
+{% macro standard_edge(edge) %}
+    {% if edge == "__end__" %}END{% elif edge == "__start__" %}START{% else %}"{{ edge }}"{% endif %}
+{% endmacro %}
 import { {{ stub_name }} } from "[some_path]";
 
 const StateAnnotation = Annotation.Root({
@@ -61,36 +64,30 @@ export function {{ stub_name }}<TAnnotation extends AnyAnnotationRoot>(
     {% for node in nodes %}
     .addNode("{{ node.name }}", impl.{{ node.id }})
     {% endfor %}
+    {% if entrypoint %}
     .addEdge(START, "{{ entrypoint }}")
+    {% endif %}
     {% for edge in edges %}
     {% if edge.condition is defined %}
     .addConditionalEdges(
-        "{{ edge.from }}",
+        {{ standard_edge(edge.from) }},
         impl.{{ edge.condition }},
         {% if edge.paths is mapping %}
         {
         {% for key, value in edge.paths.items() %}
-            {{ key }}: {% if value == "__end__" %}END{% else %}"{{ value }}"{% endif %},
+            {{ key }}: {{ standard_edge(value) }},
         {% endfor %}
         }
         {% else %}
         [
         {% for path in edge.paths %}
-            {% if path == "__end__" %}
-            END,
-            {% else %}
-            "{{ path }}",
-            {% endif %}
+            {{ standard_edge(path) }},
         {% endfor %}
         ]
         {% endif %}
     )
     {% else %}
-    {% if edge.to == "__end__" %}
-    .addEdge("{{ edge.from }}", END)
-    {% else %}
-    .addEdge("{{ edge.from }}", "{{ edge.to }}")
-    {% endif %}
+    .addEdge({{ standard_edge(edge.from) }}, {{ standard_edge(edge.to) }})
     {% endif %}
     {% endfor %}
 }

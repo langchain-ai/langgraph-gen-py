@@ -1,6 +1,6 @@
 /* This is an automatically generated file. Do not modify it.
 
-This file was generated using `langgraph-gen` version 0.0.1.
+This file was generated using `langgraph-gen` version 0.0.3.
 To regenerate this file, run `langgraph-gen` with the source `YAML` file as an argument.
 
 Usage:
@@ -9,7 +9,8 @@ Usage:
 2. Create a new agent using the stub.
 
 ```typescript
-import { createAgent } from "[some_path]";
+import { createAgent } from "sample_01"
+
 
 const StateAnnotation = Annotation.Root({
     // Define your state properties here

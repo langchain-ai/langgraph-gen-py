@@ -1,4 +1,4 @@
-"""This file was generated using `langgraph-gen` version 0.0.1.
+"""This file was generated using `langgraph-gen` version 0.0.3.
 
 This file provides a placeholder implementation for the corresponding stub.
 
@@ -7,7 +7,6 @@ Replace the placeholder implementation with your own logic.
 
 from typing_extensions import TypedDict
 
-# Update the import path
 from spec import RagWorkflow
 
 

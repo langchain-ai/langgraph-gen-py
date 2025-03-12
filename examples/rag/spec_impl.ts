@@ -1,4 +1,4 @@
-/* This file was generated using `langgraph-gen` version 0.0.1.
+/* This file was generated using `langgraph-gen` version 0.0.3.
 
 This file provides a placeholder implementation for the corresponding stub.
 
@@ -6,7 +6,7 @@ Replace the placeholder implementation with your own logic.
 */
 import { Annotation } from "@langchain/langgraph";
 
-import { RagWorkflow } from "./spec"
+import { RagWorkflow } from "spec"
 
 const agent = RagWorkflow(Annotation.Root({ foo: Annotation<string>() }), {
     retrieve: (state) => {

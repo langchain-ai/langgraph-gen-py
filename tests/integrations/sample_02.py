@@ -1,6 +1,6 @@
 """This is an automatically generated file. Do not modify it.
 
-This file was generated using `langgraph-gen` version 0.0.1.
+This file was generated using `langgraph-gen` version 0.0.3.
 To regenerate this file, run `langgraph-gen` with the source `yaml` file as an argument.
 
 Usage:
@@ -13,7 +13,7 @@ Below is a sample implementation of the generated stub:
 ```python
 from typing_extensions import TypedDict
 
-from [some_path] import create_agent
+from sample_02 import create_agent
 
 class SomeState(TypedDict):
     # define your attributes here

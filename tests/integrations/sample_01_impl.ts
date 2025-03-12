@@ -1,4 +1,4 @@
-/* This file was generated using `langgraph-gen` version 0.0.1.
+/* This file was generated using `langgraph-gen` version 0.0.3.
 
 This file provides a placeholder implementation for the corresponding stub.
 
@@ -6,7 +6,7 @@ Replace the placeholder implementation with your own logic.
 */
 import { Annotation } from "@langchain/langgraph";
 
-import { createAgent } from "./sample_01"
+import { createAgent } from "sample_01"
 
 const agent = createAgent(Annotation.Root({ foo: Annotation<string>() }), {
     Node_1: (state) => {

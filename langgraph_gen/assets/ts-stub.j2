@@ -12,7 +12,12 @@ Usage:
 {% macro standard_edge(edge) %}
     {% if edge == "__end__" %}END{% elif edge == "__start__" %}START{% else %}"{{ edge }}"{% endif %}
 {% endmacro %}
+{% if stub_module %}
+from {{ stub_module }} import {{ stub_name }}
+{% else %}
 import { {{ stub_name }} } from "[some_path]";
+{% endif %}
+
 
 const StateAnnotation = Annotation.Root({
     // Define your state properties here

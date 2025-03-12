@@ -7,10 +7,10 @@ Replace the placeholder implementation with your own logic.
 
 from typing_extensions import TypedDict
 
-# Update the import path
 {% if stub_module %}
 from {{ stub_module }} import {{ stub_name }}
 {% else %}
+# Update the import path
 # from [path to your stub] import {{ stub_name }}
 {% endif %}
 

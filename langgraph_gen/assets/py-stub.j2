@@ -13,7 +13,12 @@ Below is a sample implementation of the generated stub:
 ```python
 from typing_extensions import TypedDict
 
-from [some_path] import {{ stub_name }}
+{% if stub_module %}
+from {{ stub_module }} import {{ stub_name }}
+{% else %}
+# Update the import path
+# from [path to your stub] import {{ stub_name }}
+{% endif %}
 
 class SomeState(TypedDict):
     # define your attributes here

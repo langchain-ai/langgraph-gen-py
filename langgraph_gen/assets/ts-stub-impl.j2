@@ -7,7 +7,7 @@ Replace the placeholder implementation with your own logic.
 import { Annotation } from "@langchain/langgraph";
 
 {% if stub_module %}
-import { {{ stub_name }} } from "./{{ stub_module }}"
+import { {{ stub_name }} } from "{{ stub_module }}"
 {% else %}
 // Update the import path appropriately
 // import { {{ stub_name }} } from "[some_path]";

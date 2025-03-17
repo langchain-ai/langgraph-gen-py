@@ -63,6 +63,17 @@ def main() -> None:
     parser = argparse.ArgumentParser(
         description="Generate LangGraph agent base classes from YAML specs.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        epilog="""
+Examples:
+  # Generate Python code from a YAML spec
+  langgraph-gen spec.yml
+
+  # Generate TypeScript code from a YAML spec
+  langgraph-gen spec.yml --language typescript
+
+  # Generate with custom output paths
+  langgraph-gen spec.yml -o custom_output.py --implementation custom_impl.py
+        """,
     )
     parser.add_argument("input", type=Path, help="Input YAML specification file")
     parser.add_argument(
@@ -76,14 +87,14 @@ def main() -> None:
         "-o",
         "--output",
         type=Path,
-        help="Output Python file path for agent stub",
+        help="Output file path for the agent stub",
         default=None,
     )
 
     parser.add_argument(
         "--implementation",
         type=Path,
-        help="Output Python file path for a placeholder implementation.",
+        help="Output file path for an implementation with function stubs for all nodes",
         default=None,
     )
 
@@ -92,12 +103,17 @@ def main() -> None:
     )
 
     args = parser.parse_args()
+    
+    # If no input file is provided, display help menu and exit
+    if args.input is None:
+        parser.print_help()
+        sys.exit(0)
 
     if not args.input.exists():
         """Check if input file exists."""
         sys.exit(f"Input file {args.input} does not exist")
 
-    _generate(input_file=args.input, output_file=args.output, language=args.language)
+    _generate(input_file=args.input, output_file=args.output, language=args.language, implementation=args.implementation)
 
 
 if __name__ == "__main__":

@@ -8,16 +8,34 @@ specification file.
 ```shell
 pip install langgraph-gen
 ```
-## Stubs for Python
+
+## Basic Usage
 
 ```shell
-langgraph-gen --input <path-to-spec-file> --output <path-to-output-file> --language python
+# Generate Python code from a YAML spec
+langgraph-gen spec.yml
+
+# Generate TypeScript code from a YAML spec
+langgraph-gen spec.yml --language typescript
+
+# Generate with custom output paths
+langgraph-gen spec.yml -o custom_output.py --implementation custom_impl.py
 ```
 
-## Stubs for TypeScript
+## Command Line Options
 
-```shell
-langgraph-gen --input <path-to-spec-file> --output <path-to-output-file> --language typescript
+```
+langgraph-gen [options] input
+
+Required arguments:
+  input                 Input YAML specification file
+
+Optional arguments:
+  -l, --language        Language to generate code for (python, typescript)
+                        Default: python
+  -o, --output          Output file path for the agent stub
+  --implementation      Output file path for an implementation with function stubs for all nodes
+  -V, --version         Show program's version number and exit
 ```
 
 ## Example Spec
@@ -25,11 +43,12 @@ langgraph-gen --input <path-to-spec-file> --output <path-to-output-file> --langu
 ```YAML
 # A simple 2-step Retrieval-Augmented Generation workflow
 name: RagWorkflow
-entrypoint: retrieve
 nodes:
 - name: retrieve
 - name: generate
-  edges:
+edges:
+- from: __start__
+  to: retrieve
 - from: retrieve
   to: generate
 - from: generate

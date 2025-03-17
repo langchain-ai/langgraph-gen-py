@@ -55,6 +55,33 @@ edges:
   to: __end__
 ```
 
+## Quick Start
+
+Create an example specification file and generate the code:
+
+```shell
+# Create a simple RAG workflow specification
+cat > rag_example.yml << 'EOF'
+# A simple 2-step Retrieval-Augmented Generation workflow
+name: RagWorkflow
+nodes:
+  - name: retrieve
+  - name: generate
+edges:
+  - from: __start__
+    to: retrieve
+  - from: retrieve
+    to: generate
+  - from: generate
+    to: __end__
+EOF
+
+# Generate Python code
+langgraph-gen rag_example.yml
+
+# This will create rag_example.py and rag_example_impl.py
+```
+
 ## Examples
 
 You can find examples of the LangGraph specification together with the generated LangGraph stubs in the [examples](./examples) directory.

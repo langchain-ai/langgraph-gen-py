@@ -1,4 +1,4 @@
-"""This file was generated using `langgraph-gen` version 0.0.3.
+"""This file was generated using `langgraph-gen` version 0.0.4.
 
 This file provides a placeholder implementation for the corresponding stub.
 

@@ -1,6 +1,6 @@
 /* This is an automatically generated file. Do not modify it.
 
-This file was generated using `langgraph-gen` version 0.0.3.
+This file was generated using `langgraph-gen` version 0.0.4.
 To regenerate this file, run `langgraph-gen` with the source `YAML` file as an argument.
 
 Usage:

@@ -1,6 +1,6 @@
 [project]
 name = "langgraph-gen"
-version = "0.0.3"
+version = "0.0.4"
 description = "Genenerate code stubs for langgraph agents."
 readme = "README.md"
 requires-python = ">=3.9"

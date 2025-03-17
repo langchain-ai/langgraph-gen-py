@@ -9,6 +9,20 @@ from langgraph_gen._version import __version__
 from langgraph_gen.generate import generate_from_spec
 
 
+def print_error(message: str) -> None:
+    """Print error messages with visual emphasis.
+
+    Args:
+        message: The error message to display
+    """
+    if sys.stderr.isatty():
+        # Use colors for terminal output
+        sys.stderr.write(f"\033[91mError: {message}\033[0m\n")
+    else:
+        # Plain text for non-terminal output
+        sys.stderr.write(f"Error: {message}\n")
+
+
 def _rewrite_path_as_import(path: Path) -> str:
     """Rewrite a path as an import statement."""
     return ".".join(path.with_suffix("").parts)
@@ -34,7 +48,7 @@ def _generate(
     """
     if language not in ["python", "typescript"]:
         raise NotImplementedError(
-            f"Unsupported language: {language} Use one of 'python' or 'typescript'"
+            f"Unsupported language: {language}. Use one of 'python' or 'typescript'"
         )
     suffix = ".py" if language == "python" else ".ts"
     output_path = output_file or input_file.with_suffix(suffix)
@@ -65,10 +79,8 @@ def _generate(
 
 def main() -> None:
     """Langgraph-gen CLI entry point."""
-    parser = argparse.ArgumentParser(
-        description="Generate LangGraph agent base classes from YAML specs.",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-        epilog="""
+    # Define examples text separately with proper formatting
+    examples = """
 Examples:
   # Generate Python code from a YAML spec
   langgraph-gen spec.yml
@@ -78,7 +90,13 @@ Examples:
 
   # Generate with custom output paths
   langgraph-gen spec.yml -o custom_output.py --implementation custom_impl.py
-        """,
+"""
+
+    # Use RawDescriptionHelpFormatter to preserve newlines in epilog
+    parser = argparse.ArgumentParser(
+        description="Generate LangGraph agent base classes from YAML specs.",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog=examples,
     )
     parser.add_argument("input", type=Path, help="Input YAML specification file")
     parser.add_argument(
@@ -111,21 +129,32 @@ Examples:
     try:
         args = parser.parse_args()
     except SystemExit as e:
-        # If there's a parse error (exit code != 0), print help and colorized error message
+        # If there's a parse error (exit code != 0), show the full help
         if e.code != 0:
-            parser.print_help()
-            # Check if stderr is a TTY to use colors
-            if sys.stderr.isatty():
-                sys.stderr.write(
-                    "\033[91m\nError: Invalid arguments. See usage above.\033[0m\n"
-                )
-            else:
-                sys.stderr.write("\nError: Invalid arguments. See usage above.\n")
+            # Create a custom parser without formatter to avoid showing usage twice
+            custom_help_parser = argparse.ArgumentParser(
+                description=parser.description,
+                formatter_class=argparse.RawDescriptionHelpFormatter,
+                epilog=parser.epilog,
+                add_help=False,
+                usage=argparse.SUPPRESS,  # Suppress the usage line
+            )
+            # Add the same arguments
+            for action in parser._actions:
+                if action.dest != "help":  # Skip the help action
+                    custom_help_parser._add_action(action)
+
+            # Print full help without the usage line (which was already printed by argparse)
+            print()
+            custom_help_parser.print_help()
+
+            # Add error message using our helper function
+            print_error("Invalid arguments")
         sys.exit(e.code)
 
     # Check if input file exists
     if not args.input.exists():
-        sys.stderr.write(f"Error: Input file {args.input} does not exist\n")
+        print_error(f"Input file {args.input} does not exist")
         sys.exit(1)
 
     # Generate the code
@@ -147,11 +176,8 @@ Examples:
             print(f"- Stub file:           {stub_file}")
             print(f"- Implementation file: {impl_file}")
     except Exception as e:
-        # Use red color for errors if terminal supports it
-        if sys.stderr.isatty():
-            sys.stderr.write(f"\033[91mError: {str(e)}\033[0m\n")
-        else:
-            sys.stderr.write(f"Error: {str(e)}\n")
+        # Use our helper function for consistent error formatting
+        print_error(str(e))
         sys.exit(1)
 
 

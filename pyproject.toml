@@ -1,9 +1,10 @@
 [project]
 name = "langgraph-gen"
-version = "0.0.5"
+version = "0.0.6"
 description = "Genenerate code stubs for langgraph agents."
 readme = "README.md"
 requires-python = ">=3.9"
+license = "MIT"
 dependencies = [
     "jinja2>=3.1.5",
     "langgraph>=0.2.74",

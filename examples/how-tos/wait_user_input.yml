@@ -1,0 +1,14 @@
+# see https://langchain-ai.github.io/langgraph/how-tos/human_in_the_loop/wait-user-input/
+name: WaitUserInput
+entrypoint: step_1
+nodes:
+  - name: step_1
+  - name: human_feedback
+  - name: step_3
+edges:
+  - from: step_1
+    to: human_feedback
+  - from: human_feedback
+    to: step_3
+  - from: step_3
+    to: __end__

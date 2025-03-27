@@ -1,0 +1,14 @@
+# see https://langchain-ai.github.io/langgraph/how-tos/recursion-limit/
+name: RecursionLimit
+entrypoint: a
+nodes:
+  - name: a
+  - name: b
+edges:
+  - from: a
+    condition: route
+    paths:
+      - b
+      - __end__
+  - from: b
+    to: a
